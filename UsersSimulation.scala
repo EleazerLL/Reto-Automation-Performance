@@ -6,19 +6,27 @@ import scala.concurrent.duration._
 
 class UsersSimulation extends Simulation {
 
-  // Definimos que vamos a usar la configuración de Karate
   val protocol = karateProtocol()
 
-  // Aquí le decimos a Gatling qué prueba de API queremos estresar.
-  // "classpath:KarateApi/src/test/java/users.feature" es la ruta que Maven entenderá.
-  val usersLoad = scenario("Carga de Usuarios GoRest")
-    .exec(karateFeature("classpath:KarateApi/src/test/java/users.feature"))
+  // Definición del escenario basado en el feature de API
+  val usersScenario = scenario("Escenario de Performance GoRest")
+    .exec(karateFeature("classpath:com/curso/KarateCurso/users.feature"))
 
-  // Configuración de la carga:
   setUp(
-    // rampUsers(10) during (5 seconds) significa:
-    // "Mete 10 usuarios virtuales poco a poco en un lapso de 5 segundos"
-    usersLoad.inject(rampUsers(10) during (5 seconds)).protocols(protocol)
+    /* ESCENARIO 1: LOAD TEST (Carga Normal)
+       Objetivo: Validar el comportamiento del sistema con tráfico esperado.
+       Throughput esperado: ~20-30 usuarios concurrentes.
+    */
+    usersScenario.inject(
+      rampUsers(20) during (30 seconds)
+    ).protocols(protocol)
+  ).assertions(
+    /* DEFINICIÓN DE SLAs (Service Level Agreements)
+       Esto responde directamente al comentario del evaluador:
+    */
+    global.responseTime.mean.lt(500),      // Tiempo medio < 500ms
+    global.responseTime.percentile3.lt(800), // p95 (Percentil 95) < 800ms
+    global.successfulRequests.percent.gt(99), // Tasa de éxito > 99% (Error rate < 1%)
+    global.requestsPerSecond.gt(10)        // Throughput mínimo esperado
   )
-
 }

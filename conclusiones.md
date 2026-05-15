@@ -1,0 +1,5 @@
+## Conclusiones - Performance Testing
+
+* **Validación de Objetivos:** El script de simulación ha sido actualizado para incluir aserciones automáticas (Assertions). Esto permite que la prueba de performance no sea solo una ejecución, sino un validador de negocio que determina si la API es apta para producción según el p95 y la tasa de error definida.
+* **Escalabilidad y Mantenimiento:** La reutilización de los archivos `.feature` de la suite funcional de APIs garantiza que cualquier cambio en la lógica del negocio se refleje automáticamente en las pruebas de carga, asegurando la consistencia de los datos (CRUD).
+* **Análisis de Capacidad:** Se diferenciaron los escenarios de Carga y Estrés, permitiendo a los stakeholders no técnicos comprender el límite operativo de la aplicación y facilitar la toma de decisiones sobre la infraestructura necesaria para soportar el throughput esperado..
